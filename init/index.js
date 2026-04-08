@@ -1,5 +1,6 @@
+require("dotenv").config({ path: "../.env" });
 const mongoose = require('mongoose');
-const data = require('./data.js');
+const initData = require('./data.js');
 const Listing = require('../models/listing.js');
 
 main()
@@ -14,3 +15,9 @@ async function main() {
     await mongoose.connect(process.env.MONGO_URL);
 }
 
+const initDB = async () => {
+    await Listing.insertMany(initData.data);
+    console.log("Data was initalized");
+}
+
+initDB();
