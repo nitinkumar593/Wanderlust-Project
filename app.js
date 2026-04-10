@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require('mongoose');
 const Listing = require("./models/listing.js");
 const path = require("path");
+const methodOverride = require("method-override");
 
 main()
     .then(() => {
@@ -20,6 +21,7 @@ app.set("view engine ","ejs");
 app.set("views",path.join(__dirname,"views"));
 app.use(express.static(path.join(__dirname,"public")));
 app.use(express.urlencoded({extended:true}));
+app.use(methodOverride("_method"));
 
 
 app.get("/", (req, res) => {
@@ -38,7 +40,7 @@ app.get("/listings/new" , (req,res)=>{
 });
 
 app.post("/listings", async (req,res)=>{
-    const newListing = new Listing(req.body);
+    const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
 });
@@ -48,6 +50,27 @@ app.get("/listings/:id", async (req,res)=>{
     const {id} = req.params;
     const listing = await Listing.findById(id);
     res.render("listings/show.ejs",{listing});
+});
+
+// Edit route
+app.get("/listings/:id/edit", async (req,res)=>{
+    const {id} = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/edit.ejs",{listing});
+});
+
+// Update route
+app.put("/listings/:id", async (req,res)=>{
+    const {id} = req.params;    
+    await Listing.findByIdAndUpdate(id, {...req.body.listing},{ new: true, runValidators: true });//in this i'm using spread operator (...) because it helps directly matches with schema
+    res.redirect(`/listings/${id}`);
+});
+
+// delete route
+app.delete("/listings/:id", async (req,res)=> {
+    const {id} = req.params;
+    await Listing.findByIdAndDelete(id);
+    res.redirect("/listings");
 });
 
 app.listen(8080, () => {
