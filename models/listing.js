@@ -11,8 +11,8 @@ const listingSchema = new Schema({
     },
     image:{
         type: String,
-        default: "https://unsplash.com/photos/coconut-tree-near-shore-within-mountain-range-RN6ts8IZ4_0",
-        set: (v) => v===""?"https://unsplash.com/photos/coconut-tree-near-shore-within-mountain-range-RN6ts8IZ4_0":v,
+        default: "https://plus.unsplash.com/premium_photo-1677474827617-6a7269f97574?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bHV4dXJ5JTIwaG90ZWx8ZW58MHx8MHx8fDA%3D",
+        set: (v) => v===""?"https://plus.unsplash.com/premium_photo-1677474827617-6a7269f97574?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bHV4dXJ5JTIwaG90ZWx8ZW58MHx8MHx8fDA%3D":v,
     },
     price:{
         type: Number
