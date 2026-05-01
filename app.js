@@ -8,6 +8,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
+const { listingSchema } = require("./schema.js");
 
 main()
     .then(() => {
@@ -31,6 +32,17 @@ app.get("/", (req, res) => {
     res.send("Port is working");
 });
 
+const validateListing = (req, res, next) => {
+
+    const { error } = listingSchema.validate(req.body);
+    if(error){
+        let errMessage = error.details.map(el => el.message).join(","); // this will give us all the error messages in a single string
+        throw new ExpressError(400,errMessage);
+    }else{
+    next();
+    }
+};  
+
 // index route
 app.get("/listings",wrapAsync( async (req,res)=>{
     const allListing = await Listing.find({});
@@ -42,11 +54,7 @@ app.get("/listings/new" , (req,res)=>{
     res.render("listings/new.ejs");
 });
 
-app.post("/listings",wrapAsync(async (req,res)=>{
-    // validation for create route
-    if(!req.body.listing){
-        throw new ExpressError(400,"Invalid Listing Data");
-    }
+app.post("/listings", validateListing, wrapAsync(async (req,res)=>{
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
@@ -67,11 +75,7 @@ app.get("/listings/:id/edit", wrapAsync(async (req,res)=>{
 }));
 
 // Update route
-app.put("/listings/:id", wrapAsync(async (req,res)=>{
-    // validation for update route
-    if(!req.body.listing){
-        throw new ExpressError(400,"Invalid Listing Data");
-    }   
+app.put("/listings/:id", validateListing, wrapAsync(async (req,res)=>{
     const {id} = req.params;    
     await Listing.findByIdAndUpdate(id, {...req.body.listing},{ new: true, runValidators: true });//in this i'm using spread operator (...) because it helps directly matches with schema
     res.redirect(`/listings/${id}`);
