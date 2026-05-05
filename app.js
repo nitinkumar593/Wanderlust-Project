@@ -37,7 +37,7 @@ const validateListing = (req, res, next) => {
 
     const { error } = listingSchema.validate(req.body);
     if (error) {
-        let errMessage = error.details.map(el => el.message).join(","); // this will give us all the error messages in a single string
+        let errMessage = error.details.map((el) => el.message).join(","); // this will give us all the error messages in a single string
         throw new ExpressError(400, errMessage);
     } else {
         next();
