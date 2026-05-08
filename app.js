@@ -77,7 +77,7 @@ app.post("/listings", validateListing, wrapAsync(async (req, res) => {
 // show route
 app.get("/listings/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews");
     res.render("listings/show.ejs", { listing });
 }));
 
@@ -95,7 +95,7 @@ app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
     res.redirect(`/listings/${id}`);
 }));
 
-// delete route
+// delete route for listings
 app.delete("/listings/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
@@ -117,6 +117,14 @@ app.post("/listings/:id/reviews",validateReview , wrapAsync (async(req, res) =>{
     await listing.save();
 
     res.redirect(`/listings/${listing._id}`)
+}));
+
+// delete route For reviews
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req, res) => {
+    const { id , reviewId} = req.params;
+    await Listing.findByIdAndUpdate(id , {$pull : {reviews: reviewId}});
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
 }));
 
 // handling all other routes which are not defined
