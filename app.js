@@ -5,8 +5,9 @@ const mongoose = require('mongoose');
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const session = require("express-session");
 
-
+// Require Route from routes folder
 const listings = require("./routes/listings.js");
 const reviews = require("./routes/reviews.js");
 
@@ -21,12 +22,26 @@ main()
 async function main() {
     await mongoose.connect(process.env.MONGO_URL);
 }
+
 app.set("view engine ", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
+
+const sessionOptions = {
+    secret : "mysupersectate",
+    resave : false,
+    saveUninitialized : true,
+    cookie : {
+        expires : Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge : 7 * 24 * 60 * 60 * 1000,
+        httpOnly : true
+    },
+};
+// use session 
+app.use(session(sessionOptions));
 
 // Use Routes 
 app.use("/listings", listings);
