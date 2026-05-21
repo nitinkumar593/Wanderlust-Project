@@ -6,6 +6,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
+const flash = require('connect-flash');
 
 // Require Route from routes folder
 const listings = require("./routes/listings.js");
@@ -42,6 +43,15 @@ const sessionOptions = {
 };
 // use session 
 app.use(session(sessionOptions));
+app.use(flash());
+
+// middleware for flash
+app.use((req,res,next) =>{
+   res.locals.success = req.flash("success");
+   res.locals.error = req.flash("error");
+   next(); 
+});
+
 
 // Use Routes 
 app.use("/listings", listings);
