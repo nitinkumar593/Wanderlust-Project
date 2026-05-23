@@ -7,6 +7,11 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
 const flash = require('connect-flash');
+// all require is for authentication
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user.js');
+
 
 // Require Route from routes folder
 const listings = require("./routes/listings.js");
@@ -45,6 +50,14 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 app.use(flash());
 
+// for authentication
+app.use(passport.initialize());
+app.use(passport.session());
+passpot.use(new LocalStrategy(User.authenticate()));
+// For save and Unsave user info in session
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // middleware for flash
 app.use((req,res,next) =>{
    res.locals.success = req.flash("success");
@@ -52,18 +65,18 @@ app.use((req,res,next) =>{
    next(); 
 });
 
-
 // Use Routes 
 app.use("/listings", listings);
 app.use("/listings/:id/reviews", reviews);
 
-app.get("/", (req, res) => {
-    res.send("Port is working");
-});
 
 // handling all other routes which are not defined
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));
+});
+
+app.get("/", (req, res) => {
+    res.send("Port is working");
 });
 
 // error handling middleware
