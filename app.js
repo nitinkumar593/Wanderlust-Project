@@ -14,8 +14,9 @@ const User = require('./models/user.js');
 
 
 // Require Route from routes folder
-const listings = require("./routes/listings.js");
-const reviews = require("./routes/reviews.js");
+const listingsRouter = require("./routes/listings.js");
+const reviewsRouter = require("./routes/reviews.js");
+const userRouter = require("./routes/user.js");
 
 main()
     .then(() => {
@@ -53,7 +54,7 @@ app.use(flash());
 // for authentication
 app.use(passport.initialize());
 app.use(passport.session());
-passpot.use(new LocalStrategy(User.authenticate()));
+passport.use(new LocalStrategy(User.authenticate()));
 // For save and Unsave user info in session
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -65,10 +66,10 @@ app.use((req,res,next) =>{
    next(); 
 });
 
-// Use Routes 
-app.use("/listings", listings);
-app.use("/listings/:id/reviews", reviews);
-
+// Use Routes middleware
+app.use(/*default path*/"/listings", listingsRouter);
+app.use(/*default path*/"/listings/:id/reviews", reviewsRouter);
+app.use(/*default path*/"/", userRouter);
 
 // handling all other routes which are not defined
 app.all("*", (req, res, next) => {
@@ -88,3 +89,13 @@ app.use((err, req, res, next) => {
 app.listen(8080, () => {
     console.log("Server is listening to port");
 });
+
+// app.get("/demouser",async (req,res)=>{
+//     let fakeUser = new User({
+//         email : "fakeUser@gmail.com",
+//         username : "demo-user"
+//     });
+
+//     let registerdUser = await User.register(fakeUser, "Userpassword");
+//     res.send(registerdUser);
+// });
