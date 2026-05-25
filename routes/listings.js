@@ -1,22 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
-const ExpressError = require("../utils/ExpressError.js");
-const { listingSchema } = require("../schema.js");
 const Listing = require("../models/listing.js");
-const {isLoggedIn} = require("../middleware.js");
+const {isLoggedIn, isOwner, validateListing} = require("../middleware.js");
 
-// middleware for validating the listing data using Joi
-const validateListing = (req, res, next) => {
-
-    const { error } = listingSchema.validate(req.body);
-    if (error) {
-        let errMessage = error.details.map((el) => el.message).join(","); // this will give us all the error messages in a single string
-        throw new ExpressError(400, errMessage);
-    } else {
-        next();
-    }
-};
 
 // index route
 router.get("/", wrapAsync(async (req, res) => {
@@ -45,12 +32,11 @@ router.get("/:id", wrapAsync(async (req, res) => {
         req.flash("error","Listing you requested for does not exist!")
         return res.redirect("/listings");
     }
-    console.log(listing);
     res.render("listings/show.ejs", { listing });
 }));
 
 // Edit route
-router.get("/:id/edit",  isLoggedIn, wrapAsync(async (req, res) => {
+router.get("/:id/edit",  isLoggedIn, isOwner, wrapAsync(async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
      if(!listing){
@@ -61,7 +47,7 @@ router.get("/:id/edit",  isLoggedIn, wrapAsync(async (req, res) => {
 }));
 
 // Update route
-router.put("/:id", isLoggedIn, validateListing, wrapAsync(async (req, res) => {
+router.put("/:id", isLoggedIn, isOwner, validateListing, wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, { ...req.body.listing }, { new: true, runValidators: true });//in this i'm using spread operator (...) because it helps directly matches with schema
     req.flash("success", "Listing updated!");
@@ -69,7 +55,7 @@ router.put("/:id", isLoggedIn, validateListing, wrapAsync(async (req, res) => {
 }));
 
 // delete route
-router.delete("/:id", isLoggedIn, wrapAsync(async (req, res) => {
+router.delete("/:id", isLoggedIn, isOwner, wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
     req.flash("success", "Listing deleted!");
