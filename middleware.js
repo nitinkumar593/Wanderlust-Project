@@ -6,7 +6,9 @@ const { listingSchema , reviewSchema} = require("./schema.js");
 // middleware for check if user is logged in or not
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
-        req.session.redirectUrl = req.originalUrl;
+        if (req.method === "GET") {
+            req.session.redirectUrl = req.originalUrl; 
+        }
         req.flash("error", "You must be signed in first!");
         return res.redirect("/login");
     } else {
