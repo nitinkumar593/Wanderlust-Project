@@ -20,7 +20,7 @@ router.route("/")
 
 router.route("/:id")
     .get(wrapAsync(lisitngController.showListing))
-    .put(isLoggedIn, isOwner, validateListing, wrapAsync(lisitngController.updateListing))
+    .put(isLoggedIn, isOwner, upload.single('listing[image]'), validateListing, wrapAsync(lisitngController.updateListing))
     .delete(isLoggedIn, isOwner, wrapAsync(lisitngController.destroyListing));
 
 
