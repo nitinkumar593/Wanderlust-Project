@@ -1,5 +1,5 @@
 const Listing = require("../models/listing.js");
-const axios = require("axios");
+const { getCoordinates } = require("../services/geocode");
 
 // index 
 module.exports.index = async (req, res) => {
@@ -16,44 +16,23 @@ module.exports.renderNewForm = (req, res) => {
 module.exports.createListing = async (req, res) => {
     let url = req.file.path;
     let filename = req.file.filename;
-     // 1️⃣ get location text from form
-     const locationText = req.body.listing.location;
-     // 2️⃣ call Nominatim (GEOCODING)
-    const geo = await axios.get(
-            "https://nominatim.openstreetmap.org/search",
-            {
-                params: {
-                    q: locationText,
-                    format: "json",
-                    limit: 1
-                },
-                headers: {
-                    "User-Agent": "AirbnbProject/1.0"
-                }
-            }
-        );
-        console.log(geo.data);
-        // handle case when location is not found
-        if (!geo.data.length) {
-            req.flash("error", "Location not found!");
-            return res.redirect("/listings/new");
-        }
 
-        const place = geo.data[0];
+    const locationText = req.body.listing.location;
 
-    req.body.listing.image = { url, filename };
+    const geometry = await getCoordinates(locationText);
+
+    if (!geometry) {
+        req.flash("error", "Location not found!");
+        return res.redirect("/listings/new");
+    }
+
     const newListing = new Listing(req.body.listing);
     newListing.owner = req.user._id;
     newListing.image = { url, filename };
-        // 3️⃣ STORE COORDINATES (IMPORTANT PART)
-        newListing.geometry = {
-            type: "Point",
-            coordinates: [
-                parseFloat(place.lon),
-                parseFloat(place.lat)
-            ]
-        };
-        await newListing.save();
+    newListing.geometry = geometry;
+
+    await newListing.save();
+
     req.flash("success", "New listing created!");
     res.redirect("/listings");
 }
