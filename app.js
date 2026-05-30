@@ -8,6 +8,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
+const MongoStore = require("connect-mongo").default;
 const flash = require('connect-flash');
 // all require is for authentication
 const passport = require('passport');
@@ -40,7 +41,20 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 
+const store = MongoStore.create({
+    mongoUrl: process.env.MONGO_URL,
+    crypto: {
+        secret: "mysupersectate",
+    },
+    touchAfter: 24 * 3600, // time period in seconds
+});
+
+store.on("error", function (e) {
+    console.log("Session Store Error", e);
+});
+
 const sessionOptions = {
+    store,
     secret : "mysupersectate",
     resave : false,
     saveUninitialized : true,
@@ -78,10 +92,6 @@ app.use(/*default path*/"/", userRouter);
 // handling all other routes which are not defined
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found"));
-});
-
-app.get("/", (req, res) => {
-    res.send("Port is working");
 });
 
 // error handling middleware

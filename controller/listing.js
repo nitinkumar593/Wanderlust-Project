@@ -1,19 +1,27 @@
 const Listing = require("../models/listing.js");
 const { getCoordinates } = require("../services/geocode");
+const categories = require("../data/category.js");
 
 // index 
 module.exports.index = async (req, res) => {
-    const allListing = await Listing.find({});
-    res.render("listings/index.ejs", { allListing });
+    const selectedCategory = req.query.category;
+    let filter = {};
+
+    if (selectedCategory) {
+        filter.category = selectedCategory;
+    }
+    const allListing = await Listing.find(filter);
+    res.render("listings/index.ejs", { allListing , categories, selectedCategory });
 }
 
 // get route for render new listing form
 module.exports.renderNewForm = (req, res) => {
-    res.render("listings/new.ejs");
+    res.render("listings/new.ejs", { categories });
 }
 
 // post route for create listing
 module.exports.createListing = async (req, res) => {
+    
     let url = req.file.path;
     let filename = req.file.filename;
 
@@ -59,7 +67,7 @@ module.exports.renderEditForm = async (req, res) => {
 
     let orignalImageUrl = listing.image.url;
     orignalImageUrl = orignalImageUrl.replace("/upload", "/upload/w_300"); // this will give us the image with width of 300px
-    res.render("listings/edit.ejs", { listing, orignalImageUrl });
+    res.render("listings/edit.ejs", { listing, orignalImageUrl, categories });
 }
 
 // update route

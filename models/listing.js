@@ -5,7 +5,7 @@ const Review = require("./review.js");
 const listingSchema = new Schema({
     title: {
         type: String,
-        require: true,
+        required: true,
     },
     description: {
         type: String
@@ -30,25 +30,43 @@ const listingSchema = new Schema({
         }
     ],
     owner: {
-        type : Schema.Types.ObjectId,
-        ref : "User"
+        type: Schema.Types.ObjectId,
+        ref: "User"
     },
     geometry: {
-    type: {
-        type: String,  
-        enum: ['Point'],   // 'geometry.type' must be 'Point'
-        required: true
+        type: {
+            type: String,
+            enum: ['Point'],   // 'geometry.type' must be 'Point'
+            required: true
+        },
+        coordinates: {
+            type: [Number], // [longitude, latitude]
+            required: true
+        }
     },
-    coordinates: {
-        type: [Number], // [longitude, latitude]
+    category: {
+        type: String,
+        enum: [
+            "Trending",
+            "Iconic City",
+            "Amazing Pools",
+            "Beach",
+            "Amazing Views",
+            "Cabins",
+            "Lakefront",
+            "Mountain",
+            "Castles",
+            "Camping",
+            "Farms",
+            "Arctic"
+        ],
         required: true
     }
-},
 });
 
-listingSchema.post("findOneAndDelete", async(listing) =>{
-    if(listing){
-        await Review.deleteMany({_id: {$in : listing.reviews}})
+listingSchema.post("findOneAndDelete", async (listing) => {
+    if (listing) {
+        await Review.deleteMany({ _id: { $in: listing.reviews } })
     }
 });
 
