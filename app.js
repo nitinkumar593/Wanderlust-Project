@@ -44,7 +44,7 @@ app.engine("ejs", ejsMate);
 const store = MongoStore.create({
     mongoUrl: process.env.MONGO_URL,
     crypto: {
-        secret: "mysupersectate",
+        secret: process.env.SECRET,
     },
     touchAfter: 24 * 3600, // time period in seconds
 });
@@ -55,7 +55,7 @@ store.on("error", function (e) {
 
 const sessionOptions = {
     store,
-    secret : "mysupersectate",
+    secret : process.env.SECRET,
     resave : false,
     saveUninitialized : true,
     cookie : {
