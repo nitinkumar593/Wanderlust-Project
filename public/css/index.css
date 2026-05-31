@@ -28,11 +28,6 @@
     margin: 0;
 }
 
-.filters-container a{
-    text-decoration: none;
-    color: black;
-}
-
 .active-filter {
     opacity: 1;
     border-bottom: 1.5px solid black !important;
