@@ -28,6 +28,11 @@
     margin: 0;
 }
 
+.filters-container a{
+    text-decoration: none;
+    color: black;
+}
+
 .active-filter {
     opacity: 1;
     border-bottom: 1.5px solid black !important;
@@ -65,4 +70,19 @@
 
 .search-bar button:hover{
     opacity: 0.9;
+}
+
+.tax-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid black;
+    border-radius: 1rem;
+    padding: 10px;
+    cursor: pointer;
+    width: fit-content;
+}
+
+.gst {
+    display: none;
 }
