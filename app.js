@@ -22,6 +22,11 @@ const listingsRouter = require("./routes/listings.js");
 const reviewsRouter = require("./routes/reviews.js");
 const userRouter = require("./routes/user.js");
 
+// 👇 HOME ROUTE (redirect)
+app.get("/", (req, res) => {
+    res.redirect("/listings");
+});
+
 main()
     .then(() => {
         console.log("Connection Successful");
