@@ -12,7 +12,7 @@ This is my first major fullstack project where I handled both the frontend and b
 
 ## 🚀 Live Demo
 
-Click here to explore unique stays and start your journey! 👉 [ **[ 🌏 WanderLust 🗺️ ]** ]( https://wanderlust-du5m.onrender.com )
+Click here to explore unique stays and start your journey! 👉 [ **[ 🌏 WanderLust 🗺️ ]** ]( https://wanderlust-project-1eux.onrender.com )
 
 > 💡 **Pro Tip:** Login is hassle-free! You don't need a real email ID—just create a dummy account to test features like adding reviews. 😜
 >
@@ -77,48 +77,8 @@ airbnbproject/
 ├── init/
 ├── app.js
 └── package.json
-
-<br>
-
-```mermaid
-graph TD
-    A[Start: User Visits App 🌍] --> B[🎨 Split-Landing Hero Page]
-    
-    %% Global Feature (Added quotes below to fix the error)
-    B -- "Always Available" --> Z["👤 Smart User Menu (Guest/User)"]
-    
-    B --> C{Choose Path}
-    
-    %% Traveler Flow
-    C -- "Traveler (Explore)" --> D[Explore Listings with Leaflet Map 🗺️]
-    D --> F[Select Property]
-    
-    %% Host Flow (Get Started)
-    C -- "Become a Host" --> G{Is User Logged In?}
-    
-    %% Auth Logic
-    G -- No --> E[Login / Signup 🔐]
-    E --> G
-    
-    %% Create Listing Logic
-    G -- Yes --> J[Create New Listing Form 📝]
-    
-    J --> K[Upload Images to Cloudinary ☁️]
-    K --> L[Server-Side Joi Validation 🛡️]
-    L --> M[Save to MongoDB Atlas 💽]
-    M --> N[🚀 Live Listing on Render]
-    
-    %% Booking Logic
-    F --> G
-    G -- Yes --> H[Book Stay / Leave Review 💬]
-    
-    H --> O((Happy User ✨))
-    N --> O
-
 ```
-
 <br>
-
 ## 🧠 Learning Outcomes
 
 **Building WanderLust transformed my theoretical knowledge into production-grade engineering skills.**
