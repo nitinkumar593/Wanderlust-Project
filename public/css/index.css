@@ -1,4 +1,4 @@
-.filter {
+.filters-container {
     display: flex;
     align-items: center;
     height: 5rem;
@@ -8,7 +8,7 @@
     cursor: pointer;
 }
 
-.filter::-webkit-scrollbar {
+.filters-container::-webkit-scrollbar {
     display: none;
 }
 
@@ -28,7 +28,7 @@
     margin: 0;
 }
 
-.filter a{
+.filters-container a{
     text-decoration: none;
     color: black;
 }
@@ -38,4 +38,36 @@
     border-bottom: 1.5px solid black !important;
     font-weight: bold;
     transform: scale(1.1);
+}
+
+.search-bar{
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 999px;
+    padding: 0.4rem 0.5rem 0.4rem 1rem;
+    background-color: white;
+    max-width: 350px;
+    width: 100%;
+}
+
+.search-bar input{
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 0.95rem;
+}
+
+.search-bar button{
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: #ff385c;
+    color: white;
+    cursor: pointer;
+}
+
+.search-bar button:hover{
+    opacity: 0.9;
 }

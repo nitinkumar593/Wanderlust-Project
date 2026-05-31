@@ -5,15 +5,28 @@ const categories = require("../data/category.js");
 // index 
 module.exports.index = async (req, res) => {
     const selectedCategory = req.query.category;
+    const searchLocation = req.query.location;
+
     let filter = {};
 
     if (selectedCategory) {
         filter.category = selectedCategory;
     }
-    const allListing = await Listing.find(filter);
-    res.render("listings/index.ejs", { allListing , categories, selectedCategory });
-}
 
+    if (searchLocation) {
+        filter.location = {
+            $regex: searchLocation,
+            $options: "i",
+        };
+    }
+
+    const allListing = await Listing.find(filter);
+    res.render("listings/index.ejs", {
+        allListing,
+        categories,
+        selectedCategory
+    });
+};
 // get route for render new listing form
 module.exports.renderNewForm = (req, res) => {
     res.render("listings/new.ejs", { categories });
